@@ -1,0 +1,64 @@
+.ack-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.ack-page .container {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+}
+
+.ack-page .container.error {
+  border: 2px solid #f44336;
+}
+
+.ack-page h1 {
+  color: #667eea;
+  margin-top: 0;
+}
+
+.ack-page .container.error h1 {
+  color: #f44336;
+}
+
+.ack-page p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.ack-page .checkmark {
+  font-size: 48px;
+  color: #4caf50;
+  margin-bottom: 20px;
+}
+
+.ack-page .error-icon {
+  font-size: 48px;
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.ack-page .spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

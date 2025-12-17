@@ -1,0 +1,60 @@
+{
+  "name": "shaktisetu-home",
+  "version": "1.0.0",
+  "description": "ShaktiSetu Home Page - Simple landing page and acknowledgement route",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.76.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [
+    "shaktisetu",
+    "home",
+    "acknowledgement"
+  ],
+  "author": "ShaktiSetu Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-router-dom": "^5.3.3",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.2.5",
+    "react-scripts": "5.0.1",
+    "typescript": "^5.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "overrides": {
+    "typescript": "^5.3.3"
+  }
+}
