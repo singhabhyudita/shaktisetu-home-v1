@@ -155,7 +155,6 @@ describe("OnboardingPage", () => {
     expect(screen.queryByText("Outlet #2")).not.toBeInTheDocument();
   });
 
-
   it("redirects to homepage from success step", async () => {
     const originalLocation = window.location;
     // @ts-ignore
