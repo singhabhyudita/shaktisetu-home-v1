@@ -56,5 +56,23 @@
   },
   "overrides": {
     "typescript": "^5.3.3"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/index.tsx",
+      "!src/app/index.tsx",
+      "!src/services/**/*.{ts,tsx}",
+      "!src/reportWebVitals.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 89,
+        "functions": 98,
+        "lines": 99,
+        "statements": 99
+      }
+    }
   }
 }

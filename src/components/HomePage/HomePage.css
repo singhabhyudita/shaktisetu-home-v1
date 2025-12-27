@@ -1,29 +1,234 @@
-.home-page {
-  font-family: Arial, sans-serif;
+/* HomePage.css */
+.home-page-content {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Navbar styles moved to Common/Navbar.css */
+
+/* Hero Section */
+.hero-section {
+  min-height: 75vh;
+  padding: 10rem 2rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-content {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-brand-top {
+  color: var(--primary-blue);
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.hero-title {
+  font-size: clamp(3.2rem, 10vw, 3.8rem);
+  line-height: 1.1;
+  font-weight: 950;
+  margin-bottom: 3rem;
+  letter-spacing: -2px;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+  max-width: 850px;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+/* Stats Bar */
+.stats-bar {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  gap: 6rem;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  border-top: 1px solid rgba(0, 90, 156, 0.05);
+  border-bottom: 1px solid rgba(0, 90, 156, 0.05);
 }
 
-.home-page .container {
-  background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.stat-item {
   text-align: center;
-  max-width: 500px;
 }
 
-.home-page h1 {
-  color: #667eea;
-  margin-top: 0;
+.stat-item h3 {
+  font-size: 3.8rem;
+  font-weight: 950;
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+  letter-spacing: -2px;
 }
 
-.home-page p {
-  color: #666;
-  line-height: 1.6;
+.stat-item p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 800;
+  opacity: 0.7;
 }
 
+/* Mission Section */
+.mission-section {
+  padding: 8rem 2rem;
+}
+
+.mission-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mission-container h2 {
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  color: var(--primary-blue);
+  font-weight: 900;
+  opacity: 0.8;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.mission-container p {
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--primary-blue);
+  letter-spacing: -2px;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 8rem 2rem;
+  background: rgba(0, 90, 156, 0.02);
+}
+
+.testimonials-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 8rem 2rem;
+  text-align: center;
+}
+
+.cta-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.store-badge {
+  background: var(--brand-gradient);
+  color: #ffffff;
+  padding: 1.2rem 3rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 90, 156, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.store-badge:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 90, 156, 0.3);
+}
+
+.store-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.store-text span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.store-text strong {
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+/* Footer styles moved to Common/Footer.css */
+
+@media (max-width: 768px) {
+  .mission-section {
+    padding: 4rem 2rem;
+  }
+
+  .testimonials-section {
+    padding: 4rem 2rem;
+  }
+
+  .hero-section {
+    padding: 7rem 1.5rem 3rem;
+  }
+
+  .hero-brand-top {
+    display: none;
+  }
+
+  .hero-title {
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    letter-spacing: -1px;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+  }
+
+  .stats-bar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mission-container p {
+    font-size: 1.6rem;
+  }
+
+  .cta-section {
+    padding: 4rem 1.5rem;
+  }
+}

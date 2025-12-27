@@ -4,17 +4,88 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary-blue: #005a9c;
+  --primary-dark: #004477;
+  --primary-light: #e0f2fe;
+  --accent-blue: #0ea5e9;
+  --bg-dark: #ffffff;
+  --bg-card: #f8fafc;
+  --text-light: #1e293b;
+  --text-dim: #475569;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 90, 156, 0.1);
+  --gradient-main: linear-gradient(
+    160deg,
+    #eef2ff 0%,
+    #e0f2fe 45%,
+    #f1f5f9 100%
+  );
+  --brand-gradient: linear-gradient(135deg, #005a9c 0%, #0ea5e9 100%);
+}
+
+.text-gradient {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--primary-blue);
+  display: inline-block;
+}
+
+.section-title-premium {
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  font-weight: 950;
+  opacity: 0.9;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .section-title-premium {
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+    margin-bottom: 2.5rem;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    "Outfit",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--gradient-main);
+  background-attachment: fixed;
+  color: var(--text-light);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+#preact-border-shadow-host {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
