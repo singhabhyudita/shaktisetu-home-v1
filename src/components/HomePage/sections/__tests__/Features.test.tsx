@@ -23,6 +23,8 @@ describe("Features", () => {
 
     // Toggle back to Talent
     fireEvent.click(screen.getByText("For Candidates"));
-    expect(screen.getByText(FEATURES_CONTENT.talent.items[0].title)).toBeInTheDocument();
+    expect(
+      screen.getByText(FEATURES_CONTENT.talent.items[0].title),
+    ).toBeInTheDocument();
   });
 });

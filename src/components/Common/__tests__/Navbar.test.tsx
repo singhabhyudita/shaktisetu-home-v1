@@ -1,5 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
 
@@ -57,12 +63,14 @@ describe("Navbar", () => {
 
     const featuresLink = screen.getByText("Features");
     const scrollIntoViewSpy = jest.fn();
-    const querySelectorSpy = jest.spyOn(document, "querySelector").mockImplementation((selector) => {
-      if (selector === "#features") {
-        return { scrollIntoView: scrollIntoViewSpy } as any;
-      }
-      return null;
-    });
+    const querySelectorSpy = jest
+      .spyOn(document, "querySelector")
+      .mockImplementation((selector) => {
+        if (selector === "#features") {
+          return { scrollIntoView: scrollIntoViewSpy } as any;
+        }
+        return null;
+      });
 
     fireEvent.click(featuresLink);
     expect(scrollIntoViewSpy).toHaveBeenCalledWith({ behavior: "smooth" });

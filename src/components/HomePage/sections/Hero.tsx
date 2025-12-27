@@ -1,5 +1,4 @@
 import React from "react";
-import { HERO_CONTENT } from "../../../data/siteContent";
 
 const Hero: React.FC = () => {
   return (

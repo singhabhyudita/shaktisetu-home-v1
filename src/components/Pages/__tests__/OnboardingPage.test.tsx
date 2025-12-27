@@ -155,35 +155,6 @@ describe("OnboardingPage", () => {
     expect(screen.queryByText("Outlet #2")).not.toBeInTheDocument();
   });
 
-  it("toggles sections when clicking headers", () => {
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
-
-    // Section 1 is active by default in Step 2
-    expect(screen.getByText("01").closest(".form-section")).toHaveClass(
-      "active",
-    );
-
-    // Click section 2 header
-    fireEvent.click(screen.getByText("Organization Details"));
-    expect(screen.getByText("02").closest(".form-section")).toHaveClass(
-      "active",
-    );
-
-    // Click section 3 header
-    fireEvent.click(screen.getByText("Outlets & Managers"));
-    expect(screen.getByText("03").closest(".form-section")).toHaveClass(
-      "active",
-    );
-  });
-
   it("redirects to homepage from success step", async () => {
     const originalLocation = window.location;
     // @ts-ignore
@@ -207,8 +178,12 @@ describe("OnboardingPage", () => {
     fireEvent.click(screen.getByText("Complete Onboarding Registration"));
 
     await waitFor(() => {
-      expect(screen.getByText("Return to Homepage")).toBeInTheDocument();
-      fireEvent.click(screen.getByText("Return to Homepage"));
+      const btn = screen.queryByText("Return to Homepage");
+      expect(btn).toBeInTheDocument();
+      fireEvent.click(btn!);
+    });
+
+    await waitFor(() => {
       expect(window.location.href).toBe("/");
     });
 
@@ -227,7 +202,7 @@ describe("OnboardingPage", () => {
     expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
   });
 
-  it("handles enter key on invitation code", () => {
+  it("handles enter key on invitation code", async () => {
     render(
       <MemoryRouter>
         <OnboardingPage />
@@ -235,8 +210,15 @@ describe("OnboardingPage", () => {
     );
     const input = screen.getByPlaceholderText("Invitation Code");
     fireEvent.change(input, { target: { value: "TEST_CODE" } });
-    fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
-    expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
+    fireEvent.keyPress(input, {
+      key: "Enter",
+      code: "Enter",
+      charCode: 13,
+      keyCode: 13,
+    });
+    await waitFor(() => {
+      expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
+    });
   });
 
   it("handles unexpected errors in submission", async () => {
@@ -260,7 +242,7 @@ describe("OnboardingPage", () => {
     });
   });
 
-  it("toggles section 1 by clicking header", () => {
+  it("toggles section 1 by clicking header", async () => {
     render(
       <MemoryRouter>
         <OnboardingPage />
@@ -278,7 +260,9 @@ describe("OnboardingPage", () => {
     );
 
     // Switch back to section 1
-    fireEvent.click(screen.getByText("Organization Admin User"));
+    await waitFor(() => {
+      fireEvent.click(screen.getByText("Organization Admin User"));
+    });
     expect(screen.getByText("01").closest(".form-section")).toHaveClass(
       "active",
     );

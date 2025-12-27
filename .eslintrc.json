@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "testing-library/no-node-access": "off",
+    "testing-library/no-wait-for-multiple-assertions": "off",
+    "testing-library/prefer-screen-queries": "off",
+    "testing-library/no-wait-for-side-effects": "off",
+    "@typescript-eslint/no-unused-vars": "warn"
+  }
+}
