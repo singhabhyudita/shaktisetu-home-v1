@@ -4,6 +4,5 @@ node_modules/
 *.log
 
 .env.local
-package-lock.json
 build
 coverage/
