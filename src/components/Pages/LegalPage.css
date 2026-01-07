@@ -124,6 +124,26 @@
   }
 }
 
+@media (max-width: 480px) {
+  .legal-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .legal-page h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .legal-page p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .legal-text-block {
+    padding: 1.2rem;
+  }
+}
 .contact-info-block {
   background: var(--primary-light);
   padding: 2rem;
