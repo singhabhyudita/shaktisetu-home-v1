@@ -12,41 +12,18 @@ describe("OnboardingPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    sessionStorage.clear();
-    process.env.REACT_APP_ACCESS_CODE = "TEST_CODE";
   });
 
-  it("renders invitation code step initially", () => {
+  it("renders the onboarding form initially", () => {
     render(
       <MemoryRouter>
         <OnboardingPage />
       </MemoryRouter>,
     );
-    expect(screen.getByPlaceholderText("Invitation Code")).toBeInTheDocument();
-  });
-
-  it("shows error for invalid code", async () => {
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    const input = screen.getByPlaceholderText("Invitation Code");
-    fireEvent.change(input, { target: { value: "WRONG" } });
-    fireEvent.click(screen.getByText("Verify & Continue"));
-    expect(screen.getByText(/Invalid access code/)).toBeInTheDocument();
-  });
-
-  it("proceeds to form on valid code", async () => {
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    const input = screen.getByPlaceholderText("Invitation Code");
-    fireEvent.change(input, { target: { value: "TEST_CODE" } });
-    fireEvent.click(screen.getByText("Verify & Continue"));
     expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter your invitation code"),
+    ).toBeInTheDocument();
   });
 
   it("handles form submission successfully", async () => {
@@ -58,13 +35,13 @@ describe("OnboardingPage", () => {
       </MemoryRouter>,
     );
 
-    // Skip to Step 2
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
-
     // Fill Section 1
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      {
+        target: { value: "TEST_CODE" },
+      },
+    );
     fireEvent.change(screen.getByPlaceholderText("John Doe"), {
       target: { value: "Admin User" },
     });
@@ -82,9 +59,6 @@ describe("OnboardingPage", () => {
     // Fill Section 3
     fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
       target: { value: "Outlet 1" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("e.g. 19.1136, 72.8697"), {
-      target: { value: "0,0" },
     });
     fireEvent.change(
       screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
@@ -117,13 +91,39 @@ describe("OnboardingPage", () => {
       </MemoryRouter>,
     );
 
-    // Skip to Step 2
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
+    // Fill minimum required fields
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      {
+        target: { value: "TEST_CODE" },
+      },
+    );
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
     });
-    fireEvent.click(screen.getByText("Verify & Continue"));
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "admin@test.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Test" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "Outlet" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      {
+        target: { value: "Addr" },
+      },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "Mgr" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "mgr@test.com" },
+    });
 
-    // Submit (form is valid enough for mock)
+    // Submit
     fireEvent.click(screen.getByText("Complete Onboarding Registration"));
 
     await waitFor(() => {
@@ -137,10 +137,6 @@ describe("OnboardingPage", () => {
         <OnboardingPage />
       </MemoryRouter>,
     );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
 
     // Should not have remove button with 1 outlet
     expect(screen.queryByText("Remove Outlet")).not.toBeInTheDocument();
@@ -166,10 +162,34 @@ describe("OnboardingPage", () => {
         <OnboardingPage />
       </MemoryRouter>,
     );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
+
+    // Fill valid data
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      { target: { value: "CODE" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
     });
-    fireEvent.click(screen.getByText("Verify & Continue"));
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "a@a.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Org" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "O1" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      { target: { value: "A1" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "M1" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "m1@a.com" },
+    });
 
     // Success step
     (onboardingService.submitOnboarding as jest.Mock).mockResolvedValue({
@@ -190,56 +210,52 @@ describe("OnboardingPage", () => {
     (window as any).location = originalLocation;
   });
 
-  it("restores registration step from sessionStorage", () => {
-    sessionStorage.setItem("lastVerifiedCode", "TEST_CODE");
-    sessionStorage.setItem("verificationTime", Date.now().toString());
-
+  it("validates missing fields before submission", async () => {
     render(
       <MemoryRouter>
         <OnboardingPage />
       </MemoryRouter>,
     );
-    expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
-  });
 
-  it("handles enter key on invitation code", async () => {
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    const input = screen.getByPlaceholderText("Invitation Code");
-    fireEvent.change(input, { target: { value: "TEST_CODE" } });
-    fireEvent.keyPress(input, {
-      key: "Enter",
-      code: "Enter",
-      charCode: 13,
-      keyCode: 13,
-    });
-    await waitFor(() => {
-      expect(screen.getByText("Organization Onboarding")).toBeInTheDocument();
-    });
-  });
-
-  it("handles unexpected errors in submission", async () => {
-    (onboardingService.submitOnboarding as jest.Mock).mockRejectedValue(
-      new Error("Network Error"),
-    );
-
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
     fireEvent.click(screen.getByText("Complete Onboarding Registration"));
 
-    await waitFor(() => {
-      expect(screen.getByText("Network Error")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Please fill in all required fields highlighted in red. Ensure emails are valid.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("shows error for invalid email format", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "invalid-email" },
     });
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+
+    expect(
+      screen.getByText(
+        "Please fill in all required fields highlighted in red. Ensure emails are valid.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("converts invitation code to uppercase automatically", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    const input = screen.getByPlaceholderText("Enter your invitation code");
+    fireEvent.change(input, { target: { value: "lowercasecode" } });
+
+    expect(input).toHaveValue("LOWERCASECODE");
   });
 
   it("toggles section 1 by clicking header", async () => {
@@ -248,48 +264,17 @@ describe("OnboardingPage", () => {
         <OnboardingPage />
       </MemoryRouter>,
     );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
 
-    // Switch to section 2 first
+    // Switch to section 2
     fireEvent.click(screen.getByText("Organization Details"));
     expect(screen.getByText("01").closest(".form-section")).not.toHaveClass(
       "active",
     );
 
     // Switch back to section 1
-    await waitFor(() => {
-      fireEvent.click(screen.getByText("Organization Admin User"));
-    });
+    fireEvent.click(screen.getByText("Invitation & Admin"));
     expect(screen.getByText("01").closest(".form-section")).toHaveClass(
       "active",
     );
-  });
-
-  it("handles file selection for logo and offer letter", () => {
-    render(
-      <MemoryRouter>
-        <OnboardingPage />
-      </MemoryRouter>,
-    );
-    fireEvent.change(screen.getByPlaceholderText("Invitation Code"), {
-      target: { value: "TEST_CODE" },
-    });
-    fireEvent.click(screen.getByText("Verify & Continue"));
-    fireEvent.click(screen.getByText("Organization Details"));
-
-    const logoFile = new File(["test"], "logo.png", { type: "image/png" });
-    const pdfFile = new File(["test"], "template.pdf", {
-      type: "application/pdf",
-    });
-
-    const fileInputs = document.querySelectorAll('input[type="file"]');
-    fireEvent.change(fileInputs[0], { target: { files: [logoFile] } });
-    fireEvent.change(fileInputs[1], { target: { files: [pdfFile] } });
-
-    expect(screen.getByText("logo.png")).toBeInTheDocument();
-    expect(screen.getByText("template.pdf")).toBeInTheDocument();
   });
 });

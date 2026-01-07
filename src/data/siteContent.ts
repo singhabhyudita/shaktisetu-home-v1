@@ -5,7 +5,7 @@ export const SITE_INFO = {
   supportHours: "8am to 9pm everyday",
   address:
     "FLAT NO-T-2-402, PLOT NO. D69, SKP HOUSING SOCIETY PVT LTD, SECTOR 12, 410210, MAHARASHTRA, INDIA",
-  grievanceOfficer: "Ms Sangeeta Bhalekar",
+  grievanceOfficer: "Mrs Sangeeta Bhalekar",
   foundedYear: "2025",
 };
 
@@ -166,7 +166,7 @@ export const TERMS_CONTENT = [
   "1. FOR CANDIDATES",
   "ShaktiSetu is a facilitator providing digital profile curation and AI-powered job matching. By using our platform, you agree to undergo voluntary identity and PAN verification through our authorized partners. Your data will only be shared with verified employers for the purpose of recruitment.",
   "2. FOR EMPLOYERS",
-  "Employers must provide accurate job descriptions and adhere to professional hiring standards. ShaktiSetu acts as a technology bridge; we are not responsible for candidate conduct once hired.",
+  "Employers must provide accurate job descriptions and adhere to professional hiring standards. ShaktiSetu acts as a technology bridge.",
   "3. SERVICE FEES",
   "Certain placements involves a one-time placement fee. For candidates, this is typically settled via employer deduction upon successful hiring. Transparency is maintained throughout the offer lifecycle.",
   "4. DATA & PRIVACY",

@@ -3,8 +3,6 @@ import { OnboardingRequest } from "../types/onboarding";
 
 // Constants for backend configuration
 const ONBOARDING_FUNCTION = "register-organisation";
-const BUCKET_LOGOS = "logos";
-const BUCKET_TEMPLATES = "templates";
 
 export const onboardingService = {
   /**
@@ -36,47 +34,17 @@ export const onboardingService = {
 
   /**
    * Submits the onboarding request.
-   * @param payload The onboarding data.
+   * @param payload The onboarding data with files as base64 strings.
    * @returns An object containing success status and message/error.
    */
   async submitOnboarding(payload: OnboardingRequest) {
     try {
-      let logoUrl = "";
-      let offerLetterUrl = "";
-
-      // 1. Upload Logo if present
-      if (payload.org.logo) {
-        logoUrl = await this.uploadFile(
-          payload.org.logo,
-          BUCKET_LOGOS,
-          `logo_${payload.org.name.replace(/\s+/g, "_")}`,
-        );
-      }
-
-      // 2. Upload Offer Letter if present
-      if (payload.org.offerLetterPdf) {
-        offerLetterUrl = await this.uploadFile(
-          payload.org.offerLetterPdf,
-          BUCKET_TEMPLATES,
-          `template_${payload.org.name.replace(/\s+/g, "_")}`,
-        );
-      }
-
-      // 3. Prepare final payload for the Edge Function
-      const submissionData = {
-        ...payload,
-        org: {
-          ...payload.org,
-          logo: logoUrl || null,
-          offerLetterPdf: offerLetterUrl || null,
-        },
-      };
-
-      // 4. Invoke Edge Function
+      // 1. Invoke Edge Function with the direct payload
+      // Files (logo, offerLetterPdf) are already base64 strings in the payload
       const { data, error } = await supabase.functions.invoke(
         ONBOARDING_FUNCTION,
         {
-          body: submissionData,
+          body: payload,
         },
       );
 
@@ -91,12 +59,18 @@ export const onboardingService = {
       return { success: true, data };
     } catch (error) {
       console.error("Error in onboardingService:", error);
+      let friendlyMessage = "Onboarding submission failed. Please try again.";
+      if (error instanceof Error) {
+        if (error.message.includes("Edge function") || error.message.includes("non-2xx")) {
+          friendlyMessage = "Failed to process registration. Please check your invitation code and try again.";
+        } else {
+          friendlyMessage = error.message;
+        }
+      }
+
       return {
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Onboarding submission failed",
+        error: friendlyMessage,
       };
     }
   },
