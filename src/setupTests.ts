@@ -44,3 +44,26 @@ jest.mock("@supabase/supabase-js", () => ({
     },
   })),
 }));
+// Mock Leaflet
+jest.mock("leaflet", () => ({
+  icon: jest.fn(() => ({})),
+  Marker: {
+    prototype: {
+      options: {
+        icon: {},
+      },
+    },
+  },
+}));
+
+// Mock react-leaflet
+jest.mock("react-leaflet", () => ({
+  MapContainer: ({ children }: any) => children,
+  TileLayer: () => null,
+  Marker: ({ children }: any) => children,
+  useMapEvents: () => null,
+  useMap: () => ({
+    setView: jest.fn(),
+    getZoom: () => 13,
+  }),
+}));

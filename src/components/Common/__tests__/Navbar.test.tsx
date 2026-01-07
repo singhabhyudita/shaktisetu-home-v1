@@ -6,7 +6,7 @@ import {
   act,
   waitFor,
 } from "@testing-library/react";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import Navbar from "../Navbar";
 
 describe("Navbar", () => {
@@ -153,5 +153,23 @@ describe("Navbar", () => {
 
     fireEvent.click(screen.getByText("Get the App"));
     expect(scrollIntoViewSpy).toHaveBeenCalled();
+  });
+
+  it("handles anchor clicks with missing elements gracefully", () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>,
+    );
+
+    const featuresLink = screen.getByText("Features");
+    const querySelectorSpy = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue(null);
+
+    fireEvent.click(featuresLink);
+    // Should not crash
+    expect(querySelectorSpy).toHaveBeenCalledWith("#features");
+    querySelectorSpy.mockRestore();
   });
 });
