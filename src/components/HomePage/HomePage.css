@@ -9,7 +9,7 @@
 
 /* Hero Section */
 .hero-section {
-  min-height: 75vh;
+  min-height: 60vh;
   padding: 10rem 2rem 5rem;
   display: flex;
   align-items: center;
@@ -204,10 +204,6 @@
     padding: 7rem 1.5rem 3rem;
   }
 
-  .hero-brand-top {
-    display: none;
-  }
-
   .hero-title {
     font-size: 2.4rem;
     margin-bottom: 2rem;
@@ -230,5 +226,55 @@
 
   .cta-section {
     padding: 4rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 6rem 1rem 2rem;
+  }
+
+  .hero-brand-top {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .stats-bar {
+    padding: 2rem 1rem;
+  }
+
+  .stat-item h3 {
+    font-size: 2.22rem;
+  }
+
+  .mission-container h2 {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .mission-container p {
+    font-size: 1.4rem;
+  }
+
+  .store-badge {
+    padding: 1rem 1.2rem;
+    gap: 0.8rem;
+    border-radius: 16px;
+  }
+
+  .cta-buttons {
+    gap: 1.2rem;
   }
 }

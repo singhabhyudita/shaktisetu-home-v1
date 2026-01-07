@@ -55,6 +55,13 @@
     font-size: 15px;
   }
 }
+
+@media (max-width: 480px) {
+  .section-title-premium {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+}
 body {
   margin: 0;
   font-family:
