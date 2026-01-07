@@ -17,10 +17,10 @@ describe("supabaseClient", () => {
   it("should log error if env variables are missing", () => {
     const consoleErrorSpy = jest
       .spyOn(console, "error")
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
     const consoleLogSpy = jest
       .spyOn(console, "log")
-      .mockImplementation(() => {});
+      .mockImplementation(() => { });
 
     jest.isolateModules(() => {
       delete process.env.REACT_APP_SUPABASE_URL;
