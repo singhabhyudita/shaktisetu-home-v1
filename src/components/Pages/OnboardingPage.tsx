@@ -335,8 +335,9 @@ const OnboardingPage: React.FC = () => {
                 <label>Invitation Code</label>
                 <input
                   type="text"
-                  className={`modern-input invitation-input ${fieldErrors["token"] ? "invalid" : ""
-                    }`}
+                  className={`modern-input invitation-input ${
+                    fieldErrors["token"] ? "invalid" : ""
+                  }`}
                   placeholder="Enter your invitation code"
                   value={token}
                   onChange={(e) => handleTokenChange(e.target.value)}

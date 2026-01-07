@@ -12,8 +12,8 @@ jest.mock("../../../data/siteContent", () => ({
     "", // Blank line to cover branch
     "We collect basic profile data (name, phone) and identity details (PAN) strictly for industrial verification.",
     "2. DATA USAGE",
-    "Content for usage."
-  ]
+    "Content for usage.",
+  ],
 }));
 
 describe("PrivacyPage", () => {
@@ -33,9 +33,7 @@ describe("PrivacyPage", () => {
   });
 
   it("handles empty policy content gracefully", () => {
-    const {
-      PRIVACY_CONTENT: mock,
-    } = require("../../../data/siteContent");
+    const { PRIVACY_CONTENT: mock } = require("../../../data/siteContent");
 
     // Briefly override mock for this test
     const original = [...mock];

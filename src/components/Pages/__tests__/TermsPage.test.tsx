@@ -12,8 +12,8 @@ jest.mock("../../../data/siteContent", () => ({
     "", // Blank line to cover branch
     "CANDIDATE CONTENT",
     "2. FOR EMPLOYERS",
-    "EMPLOYER CONTENT"
-  ]
+    "EMPLOYER CONTENT",
+  ],
 }));
 
 describe("TermsPage", () => {
