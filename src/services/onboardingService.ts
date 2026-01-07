@@ -61,8 +61,12 @@ export const onboardingService = {
       console.error("Error in onboardingService:", error);
       let friendlyMessage = "Onboarding submission failed. Please try again.";
       if (error instanceof Error) {
-        if (error.message.includes("Edge function") || error.message.includes("non-2xx")) {
-          friendlyMessage = "Failed to process registration. Please check your invitation code and try again.";
+        if (
+          error.message.includes("Edge function") ||
+          error.message.includes("non-2xx")
+        ) {
+          friendlyMessage =
+            "Failed to process registration. Please check your invitation code and try again.";
         } else {
           friendlyMessage = error.message;
         }

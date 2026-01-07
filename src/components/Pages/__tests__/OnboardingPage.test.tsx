@@ -277,4 +277,323 @@ describe("OnboardingPage", () => {
       "active",
     );
   });
+
+  it("handles file uploads for logo and offer letter", async () => {
+    // Mock FileReader with a DIFFERENT instance for each call
+    (window as any).FileReader = jest.fn().mockImplementation(() => ({
+      readAsDataURL: jest.fn(function (this: any) {
+        setTimeout(() => {
+          this.result = "data:image/png;base64,mockbase64";
+          if (this.onload) this.onload();
+        }, 0);
+      }),
+      result: "",
+      onload: null as any,
+    }));
+
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    // Section 2: Org Details
+    fireEvent.click(screen.getByText("Organization Details"));
+
+    const logoInput = screen.getByTestId("logo-input");
+    const mockLogo = new File(["logo"], "logo.png", { type: "image/png" });
+    fireEvent.change(logoInput, { target: { files: [mockLogo] } });
+
+    const pdfInput = screen.getByTestId("pdf-input");
+    const mockPdf = new File(["pdf"], "template.pdf", {
+      type: "application/pdf",
+    });
+    fireEvent.change(pdfInput, { target: { files: [mockPdf] } });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.png");
+      expect(screen.getByTestId("pdf-name")).toHaveTextContent("template.pdf");
+    });
+  });
+
+  it("updates coordinates via MapPicker", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    const mapInput = screen.getByPlaceholderText("e.g. 19.1136, 72.8697");
+    fireEvent.change(mapInput, { target: { value: "19.0760, 72.8777" } });
+
+    // The component should update its internal state (lat/lng)
+    // We can't see the state directly, but we can verify it doesn't crash
+    // and potentially check if it's included in submission.
+
+    mockSubmitOnboarding.mockResolvedValue({ success: true });
+
+    // Fill other required fields
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      { target: { value: "CODE" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "a@a.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Org" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "O1" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      { target: { value: "A1" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "M1" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "m1@a.com" },
+    });
+
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+
+    await waitFor(() => {
+      expect(mockSubmitOnboarding).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outlets: [
+            expect.objectContaining({
+              location: expect.objectContaining({
+                coordinates: { lat: 19.076, lng: 72.8777 },
+              }),
+            }),
+          ],
+        }),
+      );
+    });
+  });
+
+  it("handles complex outlet removal", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByText("+ Add Another Outlet"));
+    fireEvent.click(screen.getByText("+ Add Another Outlet"));
+
+    const removeButtons = screen.getAllByText("Remove Outlet");
+    expect(removeButtons.length).toBe(3);
+
+    // Remove the second one
+    fireEvent.click(removeButtons[1]);
+    expect(screen.getAllByText(/Outlet #/i).length).toBe(2);
+  });
+
+  it("toggles all sections via header clicks", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    const headers = [
+      "Invitation & Admin",
+      "Organization Details",
+      "Outlets & Managers",
+    ];
+
+    headers.forEach((header) => {
+      fireEvent.click(screen.getByText(header));
+      // No specific assertion needed beyond it not crashing and changing activeSection
+    });
+  });
+
+  it("clears field errors when user types", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    // Trigger validation error
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+    const tokenInput = screen.getByPlaceholderText(
+      "Enter your invitation code",
+    );
+    expect(tokenInput).toHaveClass("invalid");
+
+    // Type to clear error
+    fireEvent.change(tokenInput, { target: { value: "A" } });
+    expect(tokenInput).not.toHaveClass("invalid");
+
+    // Check outlet error clearing
+    const outletNameInput = screen.getByPlaceholderText("Andheri West Outlet");
+    expect(outletNameInput).toHaveClass("invalid");
+    fireEvent.change(outletNameInput, { target: { value: "New Outlet" } });
+    expect(outletNameInput).not.toHaveClass("invalid");
+
+    // Check admin info clearing
+    const adminNameInput = screen.getByPlaceholderText("John Doe");
+    expect(adminNameInput).toHaveClass("invalid");
+    fireEvent.change(adminNameInput, { target: { value: "New Admin" } });
+    expect(adminNameInput).not.toHaveClass("invalid");
+
+    // Check org name clearing
+    fireEvent.click(screen.getByText("Organization Details"));
+    const orgNameInput = screen.getByPlaceholderText("e.g. McDonald's India");
+    expect(orgNameInput).toHaveClass("invalid");
+    fireEvent.change(orgNameInput, { target: { value: "New Org" } });
+    expect(orgNameInput).not.toHaveClass("invalid");
+  });
+
+  it("handles technical submission errors with generic messages", async () => {
+    mockSubmitOnboarding.mockImplementation(() => {
+      throw new Error("non-2xx response from edge function");
+    });
+
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    // Fill minimum required fields
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      { target: { value: "CODE" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "a@a.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Org" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "O1" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      { target: { value: "A1" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "M1" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "m1@a.com" },
+    });
+
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          "Failed to process registration. Please check your data and try again.",
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("handles failed submission with specific error message", async () => {
+    mockSubmitOnboarding.mockResolvedValueOnce({
+      success: false,
+      error: "Invalid Token",
+    });
+
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    // Enter token
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      { target: { value: "INV-CODE" } },
+    );
+
+    // ... fill other required fields to bypass validation
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "a@a.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Org" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "O1" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      { target: { value: "A1" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "M1" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "m1@a.com" },
+    });
+
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Invalid Token")).toBeInTheDocument();
+    });
+  });
+
+  it("handles generic errors in submission", async () => {
+    mockSubmitOnboarding.mockImplementation(() => {
+      throw new Error("Generic Error");
+    });
+
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    // Fill minimum required fields
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter your invitation code"),
+      { target: { value: "CODE" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("John Doe"), {
+      target: { value: "Admin" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("john@organization.com"), {
+      target: { value: "a@a.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("e.g. McDonald's India"), {
+      target: { value: "Org" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Andheri West Outlet"), {
+      target: { value: "O1" },
+    });
+    fireEvent.change(
+      screen.getByPlaceholderText("Street, Building, Landmark, Pincode"),
+      { target: { value: "A1" } },
+    );
+    fireEvent.change(screen.getByPlaceholderText("Full Name"), {
+      target: { value: "M1" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("manager@outlet.com"), {
+      target: { value: "m1@a.com" },
+    });
+
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Generic Error")).toBeInTheDocument();
+    });
+  });
 });

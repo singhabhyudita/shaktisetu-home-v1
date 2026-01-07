@@ -21,14 +21,13 @@ const Navbar: React.FC = () => {
     target: string,
   ) => {
     setIsMenuOpen(false);
-    if (location.pathname === "/") {
-      if (target.startsWith("#")) {
-        e.preventDefault();
-        const element = document.querySelector(target);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }
+    if (location.pathname !== "/") return;
+    if (!target.startsWith("#")) return;
+
+    e.preventDefault();
+    const element = document.querySelector(target);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
   };
 

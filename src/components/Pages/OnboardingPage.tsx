@@ -267,10 +267,15 @@ const OnboardingPage: React.FC = () => {
         window.scrollTo(0, 0);
       }
     } catch (err) {
-      let friendlyMessage = "An unexpected error occurred. Please try again later.";
+      let friendlyMessage =
+        "An unexpected error occurred. Please try again later.";
       if (err instanceof Error) {
-        if (err.message.includes("Edge function") || err.message.includes("non-2xx")) {
-          friendlyMessage = "Failed to process registration. Please check your data and try again.";
+        if (
+          err.message.includes("Edge function") ||
+          err.message.includes("non-2xx")
+        ) {
+          friendlyMessage =
+            "Failed to process registration. Please check your data and try again.";
         } else {
           friendlyMessage = err.message;
         }
@@ -414,47 +419,55 @@ const OnboardingPage: React.FC = () => {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Organization Logo (.png, .jpg)</label>
+                  <label htmlFor="org-logo">
+                    Organization Logo (.png, .jpg)
+                  </label>
                   <div className="file-upload-wrapper">
                     <input
+                      id="org-logo"
+                      data-testid="logo-input"
                       type="file"
                       accept="image/*"
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
                           const base64 = await fileToBase64(file);
-                          setOrgDetails({
-                            ...orgDetails,
+                          setOrgDetails((prev) => ({
+                            ...prev,
                             logo: base64,
                             logoName: file.name,
-                          });
+                          }));
                         }
                       }}
                     />
-                    <span className="file-label">
+                    <span className="file-label" data-testid="logo-name">
                       {orgDetails.logoName || "Choose Logo"}
                     </span>
                   </div>
                 </div>
                 <div className="form-group">
-                  <label>Offer Letter Template (PDF)</label>
+                  <label htmlFor="offer-letter">
+                    Offer Letter Template (PDF)
+                  </label>
                   <div className="file-upload-wrapper">
                     <input
+                      id="offer-letter"
+                      data-testid="pdf-input"
                       type="file"
                       accept=".pdf"
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
                           const base64 = await fileToBase64(file);
-                          setOrgDetails({
-                            ...orgDetails,
+                          setOrgDetails((prev) => ({
+                            ...prev,
                             offerLetterTemplate: base64,
                             offerLetterName: file.name,
-                          });
+                          }));
                         }
                       }}
                     />
-                    <span className="file-label">
+                    <span className="file-label" data-testid="pdf-name">
                       {orgDetails.offerLetterName || "Choose PDF"}
                     </span>
                   </div>

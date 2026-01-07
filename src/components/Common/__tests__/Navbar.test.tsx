@@ -154,4 +154,22 @@ describe("Navbar", () => {
     fireEvent.click(screen.getByText("Get the App"));
     expect(scrollIntoViewSpy).toHaveBeenCalled();
   });
+
+  it("handles anchor clicks with missing elements gracefully", () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>,
+    );
+
+    const featuresLink = screen.getByText("Features");
+    const querySelectorSpy = jest
+      .spyOn(document, "querySelector")
+      .mockReturnValue(null);
+
+    fireEvent.click(featuresLink);
+    // Should not crash
+    expect(querySelectorSpy).toHaveBeenCalledWith("#features");
+    querySelectorSpy.mockRestore();
+  });
 });
