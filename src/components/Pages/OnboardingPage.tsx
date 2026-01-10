@@ -11,15 +11,6 @@ import { OnboardingService } from "../../services/onboardingService";
 import MapPicker from "../Common/MapPicker";
 import "./OnboardingPage.css";
 
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
 interface FormManager {
   fullName: string;
   email: string;
@@ -363,8 +354,9 @@ const OnboardingPage: React.FC = () => {
                 <label>Invitation Code</label>
                 <input
                   type="text"
-                  className={`modern-input invitation-input ${fieldErrors["token"] ? "invalid" : ""
-                    }`}
+                  className={`modern-input invitation-input ${
+                    fieldErrors["token"] ? "invalid" : ""
+                  }`}
                   placeholder="Enter your invitation code"
                   value={token}
                   onChange={(e) => handleTokenChange(e.target.value)}
