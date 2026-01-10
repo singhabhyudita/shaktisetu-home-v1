@@ -1,64 +1,110 @@
 import { supabase } from "../lib/supabaseClient";
-import { OnboardingRequest } from "../types/onboarding";
+import { OnboardingRequest, OnboardingResponse } from "../types/onboarding";
 
 // Constants for backend configuration
 const ONBOARDING_FUNCTION = "register-organisation";
 
-export const onboardingService = {
+export class OnboardingService {
   /**
-   * Uploads a file to Supabase Storage.
+   * Uploads a file to a signed URL.
+   * @param bucket Storage bucket name.
+   * @param path The path of the file to upload.
+   * @param token The token for the signed URL.
    * @param file The file to upload.
-   * @param bucket The storage bucket name.
-   * @param fileName The name to store the file as.
-   * @returns The public URL of the uploaded file.
    */
-  async uploadFile(
-    file: File,
+  static async uploadToSignedUrl(
     bucket: string,
-    fileName: string,
-  ): Promise<string> {
-    const filePath = `${Date.now()}_${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
+    path: string,
+    token: string,
+    file: File,
+  ) {
+    const { data, error } = await supabase.storage
       .from(bucket)
-      .upload(filePath, file);
+      .uploadToSignedUrl(path, token, file);
 
-    if (uploadError) {
-      throw new Error(`Failed to upload ${fileName}: ${uploadError.message}`);
+    if (error) {
+      throw new Error(`Failed to upload to signed URL: ${error.message}`);
     }
 
-    const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
-
-    return data.publicUrl;
-  },
+    return data;
+  }
 
   /**
    * Submits the onboarding request.
-   * @param payload The onboarding data with files as base64 strings.
-   * @returns An object containing success status and message/error.
+   * @param payload The onboarding data.
+   * @param logo Optional organization logo file.
+   * @param offerLetter Optional offer letter template PDF file.
+   * @returns An object containing success status, response data, and any error.
    */
-  async submitOnboarding(payload: OnboardingRequest) {
+  static async submitOnboarding(
+    payload: OnboardingRequest,
+    logo: File | null = null,
+    offerLetter: File | null = null,
+  ): Promise<{
+    success: boolean;
+    error: string;
+  }> {
     try {
-      // 1. Invoke Edge Function with the direct payload
-      // Files (logo, offerLetterPdf) are already base64 strings in the payload
       const { data, error } = await supabase.functions.invoke(
         ONBOARDING_FUNCTION,
         {
           body: payload,
         },
       );
-
       if (error) {
-        throw new Error(error.message || "Submission failed");
+        let message = error.message;
+        try {
+          const body = await error.context.json();
+          message = body.error;
+        } catch (_) {
+          message = "Failed to process registration. Please try again.";
+        }
+        return {
+          success: false,
+          error: message,
+        };
+      }
+      const { data: responseData } = data || {};
+      const onboardingData = responseData as OnboardingResponse;
+
+      const uploadPromises = [];
+
+      if (logo && onboardingData.logo) {
+        uploadPromises.push(
+          OnboardingService.uploadToSignedUrl(
+            "logo",
+            onboardingData.logo.path,
+            onboardingData.logo.token,
+            logo,
+          ),
+        );
       }
 
-      if (data && data.error) {
-        throw new Error(data.error);
+      if (offerLetter && onboardingData.offer_letter) {
+        uploadPromises.push(
+          OnboardingService.uploadToSignedUrl(
+            "offer-letter-template",
+            onboardingData.offer_letter.path,
+            onboardingData.offer_letter.token,
+            offerLetter,
+          ),
+        );
       }
 
-      return { success: true, data };
+      if (uploadPromises.length > 0) {
+        try {
+          await Promise.all(uploadPromises);
+        } catch (uploadError) {
+          return {
+            success: false,
+            error:
+              "Registration succeeded but file uploads failed. Please contact support.",
+          };
+        }
+      }
+
+      return { success: true, error: "" };
     } catch (error) {
-      console.error("Error in onboardingService:", error);
       let friendlyMessage = "Onboarding submission failed. Please try again.";
       if (error instanceof Error) {
         if (
@@ -77,5 +123,5 @@ export const onboardingService = {
         error: friendlyMessage,
       };
     }
-  },
-};
+  }
+}

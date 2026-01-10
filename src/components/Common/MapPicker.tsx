@@ -99,7 +99,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
         style={{ marginBottom: "0.8rem", position: "relative" }}
       >
         <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-          Coordinates (Lat, Lng)
+          Coordinates (Lat, Lon)
         </label>
         <input
           type="text"
@@ -133,6 +133,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
         <MapContainer
           center={initialCenter}
           zoom={13}
+          scrollWheelZoom={false}
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer
@@ -141,10 +142,10 @@ const MapPicker: React.FC<MapPickerProps> = ({
           />
           <MapCameraController position={position} />
           <MapEvents
-            onLocationSelect={(lat, lng) => {
-              setPosition([lat, lng]);
-              setInputValue(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-              onLocationSelect(lat, lng);
+            onLocationSelect={(lat, lon) => {
+              setPosition([lat, lon]);
+              setInputValue(`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+              onLocationSelect(lat, lon);
             }}
           />
           {position && (

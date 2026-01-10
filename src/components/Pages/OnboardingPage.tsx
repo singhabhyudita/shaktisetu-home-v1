@@ -7,18 +7,9 @@ import {
   UserRole,
   OnboardingRequest,
 } from "../../types/onboarding";
-import { onboardingService } from "../../services/onboardingService";
+import { OnboardingService } from "../../services/onboardingService";
 import MapPicker from "../Common/MapPicker";
 import "./OnboardingPage.css";
-
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-};
 
 interface FormManager {
   fullName: string;
@@ -29,7 +20,7 @@ interface FormOutlet {
   name: string;
   address: string;
   lat: number;
-  lng: number;
+  lon: number;
   manager: FormManager;
 }
 
@@ -39,6 +30,8 @@ const OnboardingPage: React.FC = () => {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalError, setModalError] = useState("");
 
   // Form Sections State (Collapsible)
   const [activeSection, setActiveSection] = useState<number>(0);
@@ -53,9 +46,9 @@ const OnboardingPage: React.FC = () => {
   // 2. Organization Details
   const [orgDetails, setOrgDetails] = useState({
     name: "",
-    logo: null as string | null,
+    logo: null as File | null,
     logoName: "",
-    offerLetterTemplate: null as string | null,
+    offerLetterTemplate: null as File | null,
     offerLetterName: "",
   });
 
@@ -65,7 +58,7 @@ const OnboardingPage: React.FC = () => {
       name: "",
       address: "",
       lat: 19.076, // Mumbai default
-      lng: 72.8777,
+      lon: 72.8777,
       manager: { fullName: "", email: "" },
     },
   ]);
@@ -81,7 +74,7 @@ const OnboardingPage: React.FC = () => {
         name: "",
         address: "",
         lat: 19.076,
-        lng: 72.8777,
+        lon: 72.8777,
         manager: { fullName: "", email: "" },
       },
     ]);
@@ -230,8 +223,6 @@ const OnboardingPage: React.FC = () => {
 
       const org: Org = {
         name: orgDetails.name,
-        logo: orgDetails.logo,
-        offerLetterPdf: orgDetails.offerLetterTemplate,
         adminUser: adminUser,
       };
 
@@ -241,7 +232,7 @@ const OnboardingPage: React.FC = () => {
           address: o.address,
           coordinates: {
             lat: o.lat,
-            lng: o.lng,
+            lon: o.lon,
           },
         },
         managerUser: {
@@ -256,15 +247,19 @@ const OnboardingPage: React.FC = () => {
         outlets: onboardingOutlets,
         org: org,
       };
-
-      const result = await onboardingService.submitOnboarding(finalPayload);
-      if (result.success) {
+      const { success, error: submitError } =
+        await OnboardingService.submitOnboarding(
+          finalPayload,
+          orgDetails.logo,
+          orgDetails.offerLetterTemplate,
+        );
+      if (success) {
         setStep(2);
       } else {
-        setError(
-          result.error || "Failed to submit registration. Please try again.",
+        setModalError(
+          submitError || "Failed to submit registration. Please try again.",
         );
-        window.scrollTo(0, 0);
+        setShowErrorModal(true);
       }
     } catch (err) {
       let friendlyMessage =
@@ -281,7 +276,6 @@ const OnboardingPage: React.FC = () => {
         }
       }
       setError(friendlyMessage);
-      window.scrollTo(0, 0);
     } finally {
       setIsSubmitting(false);
     }
@@ -312,6 +306,31 @@ const OnboardingPage: React.FC = () => {
   return (
     <div className="onboarding-page">
       <div className="onboarding-container">
+        {showErrorModal && (
+          <div
+            className="error-modal-overlay"
+            onClick={() => setShowErrorModal(false)}
+          >
+            <div
+              className="error-modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="error-modal-header">
+                <div className="error-icon-vibrant">✕</div>
+                <h3>Registration Error</h3>
+              </div>
+              <div className="error-modal-body">
+                <p>{modalError}</p>
+              </div>
+              <button
+                className="error-modal-close-btn"
+                onClick={() => setShowErrorModal(false)}
+              >
+                I Understand
+              </button>
+            </div>
+          </div>
+        )}
         <div className="onboarding-header">
           <h1 className="text-gradient">Organization Onboarding</h1>
           <p>Setup your account, organization, and outlets in one place.</p>
@@ -420,24 +439,31 @@ const OnboardingPage: React.FC = () => {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="org-logo">
-                    Organization Logo (.png, .jpg)
-                  </label>
+                  <label htmlFor="org-logo">Organization Logo (.jpg)</label>
                   <div className="file-upload-wrapper">
                     <input
                       id="org-logo"
                       data-testid="logo-input"
                       type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
+                      accept=".jpg,.jpeg"
+                      onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const base64 = await fileToBase64(file);
+                          if (
+                            !file.name.toLowerCase().endsWith(".jpg") &&
+                            !file.name.toLowerCase().endsWith(".jpeg")
+                          ) {
+                            setError(
+                              "Please upload only .jpg or .jpeg files for the logo.",
+                            );
+                            return;
+                          }
                           setOrgDetails((prev) => ({
                             ...prev,
-                            logo: base64,
+                            logo: file,
                             logoName: file.name,
                           }));
+                          setError(""); // Clear error if valid
                         }
                       }}
                     />
@@ -456,13 +482,12 @@ const OnboardingPage: React.FC = () => {
                       data-testid="pdf-input"
                       type="file"
                       accept=".pdf"
-                      onChange={async (e) => {
+                      onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const base64 = await fileToBase64(file);
                           setOrgDetails((prev) => ({
                             ...prev,
-                            offerLetterTemplate: base64,
+                            offerLetterTemplate: file,
                             offerLetterName: file.name,
                           }));
                         }
@@ -529,10 +554,10 @@ const OnboardingPage: React.FC = () => {
                     </div>
 
                     <MapPicker
-                      initialCenter={[outlet.lat, outlet.lng]}
-                      onLocationSelect={(lat, lng) => {
+                      initialCenter={[outlet.lat, outlet.lon]}
+                      onLocationSelect={(lat, lon) => {
                         updateOutlet(idx, "lat", lat);
-                        updateOutlet(idx, "lng", lng);
+                        updateOutlet(idx, "lon", lon);
                       }}
                     />
 
