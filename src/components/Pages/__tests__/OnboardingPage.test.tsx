@@ -2,13 +2,13 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import OnboardingPage from "../OnboardingPage";
-import { onboardingService } from "../../../services/onboardingService";
+import { OnboardingService } from "../../../services/onboardingService";
 
 // Mock service
 jest.mock("../../../services/onboardingService");
 
 describe("OnboardingPage", () => {
-  const mockSubmitOnboarding = onboardingService.submitOnboarding as jest.Mock;
+  const mockSubmitOnboarding = OnboardingService.submitOnboarding as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -192,7 +192,7 @@ describe("OnboardingPage", () => {
     });
 
     // Success step
-    (onboardingService.submitOnboarding as jest.Mock).mockResolvedValue({
+    (OnboardingService.submitOnboarding as jest.Mock).mockResolvedValue({
       success: true,
     });
     fireEvent.click(screen.getByText("Complete Onboarding Registration"));
@@ -301,7 +301,7 @@ describe("OnboardingPage", () => {
     fireEvent.click(screen.getByText("Organization Details"));
 
     const logoInput = screen.getByTestId("logo-input");
-    const mockLogo = new File(["logo"], "logo.png", { type: "image/png" });
+    const mockLogo = new File(["logo"], "logo.jpg", { type: "image/jpeg" });
     fireEvent.change(logoInput, { target: { files: [mockLogo] } });
 
     const pdfInput = screen.getByTestId("pdf-input");
@@ -311,7 +311,7 @@ describe("OnboardingPage", () => {
     fireEvent.change(pdfInput, { target: { files: [mockPdf] } });
 
     await waitFor(() => {
-      expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.png");
+      expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.jpg");
       expect(screen.getByTestId("pdf-name")).toHaveTextContent("template.pdf");
     });
   });
@@ -368,11 +368,13 @@ describe("OnboardingPage", () => {
           outlets: [
             expect.objectContaining({
               location: expect.objectContaining({
-                coordinates: { lat: 19.076, lng: 72.8777 },
+                coordinates: { lat: 19.076, lon: 72.8777 },
               }),
             }),
           ],
         }),
+        null,
+        null,
       );
     });
   });
@@ -503,7 +505,7 @@ describe("OnboardingPage", () => {
   });
 
   it("handles failed submission with specific error message", async () => {
-    mockSubmitOnboarding.mockResolvedValueOnce({
+    mockSubmitOnboarding.mockResolvedValue({
       success: false,
       error: "Invalid Token",
     });
@@ -548,6 +550,28 @@ describe("OnboardingPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Invalid Token")).toBeInTheDocument();
+    });
+
+    // Close modal to cover state change
+    fireEvent.click(screen.getByText("I Understand"));
+    await waitFor(() => {
+      expect(screen.queryByText("Invalid Token")).not.toBeInTheDocument();
+    });
+
+    // Trigger again to test overlay click
+    fireEvent.click(screen.getByText("Complete Onboarding Registration"));
+    await waitFor(() => {
+      expect(screen.getByText("Invalid Token")).toBeInTheDocument();
+    });
+
+    // Click overlay
+    const overlay = screen
+      .getByText("Invalid Token")
+      .closest(".error-modal-overlay");
+    if (overlay) fireEvent.click(overlay);
+
+    await waitFor(() => {
+      expect(screen.queryByText("Invalid Token")).not.toBeInTheDocument();
     });
   });
 
@@ -595,5 +619,22 @@ describe("OnboardingPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Generic Error")).toBeInTheDocument();
     });
+  });
+
+  it("validates logo file extension", async () => {
+    render(
+      <MemoryRouter>
+        <OnboardingPage />
+      </MemoryRouter>,
+    );
+
+    const logoInput = screen.getByLabelText(/organization logo/i);
+    const invalidFile = new File(["foo"], "photo.png", { type: "image/png" });
+
+    fireEvent.change(logoInput, { target: { files: [invalidFile] } });
+
+    expect(
+      screen.getByText("Please upload only .jpg or .jpeg files for the logo."),
+    ).toBeInTheDocument();
   });
 });

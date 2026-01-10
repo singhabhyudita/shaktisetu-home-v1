@@ -3,10 +3,12 @@
   min-height: 100vh;
   padding: 5rem 2rem 3rem;
   background: transparent;
-  /* Respect global gradient */
   color: var(--text-light);
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+    /* Ensure top alignment for long content */
+    overflow-y: auto;
 }
 
 .onboarding-container {
@@ -103,8 +105,12 @@
 }
 
 .form-section.active .section-content {
-  max-height: 2500px;
+  max-height: 75vh;
   padding: 1.5rem 2.5rem 3.5rem;
+  overflow-y: auto;
+    /* Make section internally scrollable */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) transparent;
 }
 
 .form-row {
@@ -349,9 +355,8 @@
 }
 
 .onboarding-card h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 950;
-  letter-spacing: 5px;
   margin-bottom: 2rem;
   text-transform: uppercase;
 }
@@ -513,4 +518,111 @@
 
 .privacy-notice a:hover {
   opacity: 0.8;
+}
+
+/* Error Modal */
+.error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  /* Darker overlay for better focus */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error-modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 32px;
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  border: 1px solid rgba(0, 90, 156, 0.1);
+  text-align: center;
+  animation: modalScaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalScaleUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.error-modal-header {
+  margin-bottom: 2rem;
+}
+
+.error-icon-vibrant {
+  width: 80px;
+  height: 80px;
+  background: var(--brand-gradient);
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 1.8rem;
+  box-shadow: 0 20px 40px rgba(0, 90, 156, 0.25);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.error-modal-header h3 {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 950;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.error-modal-body p {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.15rem;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+  font-weight: 500;
+}
+
+.error-modal-close-btn {
+  background: var(--brand-gradient);
+  color: white;
+  border: none;
+  padding: 1.2rem 2.5rem;
+  border-radius: 16px;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 90, 156, 0.2);
+}
+
+.error-modal-close-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 90, 156, 0.3);
 }

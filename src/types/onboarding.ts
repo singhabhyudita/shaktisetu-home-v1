@@ -12,7 +12,7 @@ export interface Location {
   address: string;
   coordinates: {
     lat: number;
-    lng: number;
+    lon: number;
   };
 }
 export interface Outlet {
@@ -23,9 +23,18 @@ export interface Outlet {
 
 export interface Org {
   name: string;
-  logo: string | null;
-  offerLetterPdf: string | null;
   adminUser: User;
+}
+
+export interface SignedUrlInfo {
+  signedUrl: string;
+  path: string;
+  token: string;
+}
+
+export interface OnboardingResponse {
+  logo: SignedUrlInfo;
+  offer_letter: SignedUrlInfo;
 }
 
 export interface OnboardingRequest {
