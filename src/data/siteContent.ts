@@ -183,3 +183,8 @@ export const PRIVACY_CONTENT = [
   "3. SECURITY",
   "All data is encrypted in transit and at rest. You maintain the right to request data deletion at any time via support.",
 ];
+
+export const REFUND_CONTENT = [
+  "Refund Policy",
+  "ShaktiSetu facilitates professional placements. A one-time placement fee (starting from ₹2,500 per job) applies upon successful hiring. This fee is non-refundable once the placement is confirmed and the service is rendered, except in cases of technical errors or double-billing. For any assistance, please reach out to us at help@shaktisetu.com.",
+];

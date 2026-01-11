@@ -5,6 +5,7 @@ import AckPage from "../components/AckPage/AckPage";
 import AboutPage from "../components/Pages/AboutPage";
 import PrivacyPage from "../components/Pages/PrivacyPage";
 import TermsPage from "../components/Pages/TermsPage";
+import RefundPage from "../components/Pages/RefundPage";
 import OnboardingPage from "../components/Pages/OnboardingPage";
 import Navbar from "../components/Common/Navbar";
 import Footer from "../components/Common/Footer";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/refund" element={<RefundPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
         </Routes>
       </main>

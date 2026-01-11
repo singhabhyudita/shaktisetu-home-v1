@@ -28,6 +28,11 @@
   align-items: flex-start;
 }
 
+.legal-layout.no-sidebar {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: 0 auto;
+}
 /* Sticky Sidebar Nav */
 .legal-nav {
   position: sticky;
