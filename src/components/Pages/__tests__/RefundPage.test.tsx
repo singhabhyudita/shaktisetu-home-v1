@@ -12,7 +12,7 @@ jest.mock("../../../data/siteContent", () => ({
 }));
 
 describe("RefundPage", () => {
-  it("renders correctly without sections", () => {
+  it("renders correctly without sections (brief content)", () => {
     render(<RefundPage />);
     expect(screen.getByText(REFUND_CONTENT[0])).toBeInTheDocument();
     expect(screen.getByText(REFUND_CONTENT[1])).toBeInTheDocument();
@@ -22,5 +22,38 @@ describe("RefundPage", () => {
     expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
 
     expect(screen.getByText(/Support & Grievances/)).toBeInTheDocument();
+  });
+
+  it("renders correctly with sections (legacy/complex content)", () => {
+    const { REFUND_CONTENT: mock } = require("../../../data/siteContent");
+    const original = [...mock];
+
+    // Manually inject sections into the mock
+    mock.splice(
+      0,
+      mock.length,
+      "Refund Policy",
+      "Intro",
+      "1. SECTION ONE",
+      "Content One",
+      "", // Blank line to cover line.match branch
+      "2. SECTION TWO",
+      "Content Two",
+    );
+
+    render(<RefundPage />);
+
+    // Verify navigation links
+    expect(screen.getByText("SECTION ONE")).toBeInTheDocument();
+    expect(screen.getByText("SECTION TWO")).toBeInTheDocument();
+
+    // Verify sections
+    expect(screen.getByText("1. SECTION ONE")).toBeInTheDocument();
+    expect(screen.getByText("Content One")).toBeInTheDocument();
+    expect(screen.getByText("2. SECTION TWO")).toBeInTheDocument();
+    expect(screen.getByText("Content Two")).toBeInTheDocument();
+
+    // Restore original mock
+    mock.splice(0, mock.length, ...original);
   });
 });
