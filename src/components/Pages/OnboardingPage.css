@@ -7,8 +7,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-    /* Ensure top alignment for long content */
-    overflow-y: auto;
+  /* Ensure top alignment for long content */
+  overflow-y: auto;
 }
 
 .onboarding-container {
@@ -108,9 +108,9 @@
   max-height: 75vh;
   padding: 1.5rem 2.5rem 3.5rem;
   overflow-y: auto;
-    /* Make section internally scrollable */
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-blue) transparent;
+  /* Make section internally scrollable */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-blue) transparent;
 }
 
 .form-row {
@@ -546,7 +546,8 @@
   width: 100%;
   max-width: 480px;
   padding: 2rem;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15),
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   border: 1px solid rgba(0, 90, 156, 0.1);
   text-align: center;

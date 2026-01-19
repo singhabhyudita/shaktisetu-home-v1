@@ -186,5 +186,9 @@ export const PRIVACY_CONTENT = [
 
 export const REFUND_CONTENT = [
   "Refund Policy",
-  "ShaktiSetu facilitates professional placements. A one-time placement fee (starting from ₹2,500 per job) applies upon successful hiring. This fee is non-refundable once the placement is confirmed and the service is rendered, except in cases of technical errors or double-billing. For any assistance, please reach out to us at help@shaktisetu.com.",
+  "ShaktiSetu facilitates professional placements. A one-time placement fee applies upon successful hiring.",
+  "1. GENERAL POLICY",
+  "This fee is non-refundable once the placement is confirmed and the service is rendered, except in cases of technical errors or double-billing. For any assistance, please reach out to us at help@shaktisetu.com.",
+  "2. DOUBLE-BILLING REFUNDS",
+  "In the event of double-billing, approved refunds will be processed and credited back to your original payment method within 7–10 business days.",
 ];
