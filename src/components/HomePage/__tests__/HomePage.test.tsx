@@ -10,6 +10,7 @@ jest.mock("../sections/Testimonials", () => () => (
   <div data-testid="testimonials" />
 ));
 jest.mock("../sections/CTA", () => () => <div data-testid="cta" />);
+jest.mock("../sections/Pricing", () => () => <div data-testid="pricing" />);
 jest.mock("../sections/Clients", () => () => <div data-testid="clients" />);
 
 describe("HomePage", () => {
@@ -20,6 +21,7 @@ describe("HomePage", () => {
     expect(getByTestId("features")).toBeInTheDocument();
     expect(getByTestId("testimonials")).toBeInTheDocument();
     expect(getByTestId("cta")).toBeInTheDocument();
+    expect(getByTestId("pricing")).toBeInTheDocument();
     expect(getByTestId("clients")).toBeInTheDocument();
   });
 });
