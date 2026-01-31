@@ -312,7 +312,9 @@ describe("OnboardingPage", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.jpg");
-      expect(screen.getByTestId("docx-name")).toHaveTextContent("template.docx");
+      expect(screen.getByTestId("docx-name")).toHaveTextContent(
+        "template.docx",
+      );
     });
   });
 
