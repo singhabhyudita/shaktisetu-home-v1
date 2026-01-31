@@ -288,9 +288,16 @@ const OnboardingPage: React.FC = () => {
           <div className="success-icon">✓</div>
           <h2 className="text-gradient">Registration Successful!</h2>
           <p>
-            Thank you for choosing ShaktiSetu. We have received your
-            organization details. You will receive a confirmation email at{" "}
-            <strong>{adminInfo.email}</strong> shortly.
+            Thank you for choosing ShaktiSetu. You can now access the portal at{" "}
+            <a
+              href="https://portal.shaktisetu.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="portal-link"
+            >
+              portal.shaktisetu.com
+            </a>{" "}
+            using <strong>{adminInfo.email}</strong>.
           </p>
           <button
             className="onboarding-btn"
