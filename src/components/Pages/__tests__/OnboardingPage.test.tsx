@@ -304,15 +304,15 @@ describe("OnboardingPage", () => {
     const mockLogo = new File(["logo"], "logo.jpg", { type: "image/jpeg" });
     fireEvent.change(logoInput, { target: { files: [mockLogo] } });
 
-    const pdfInput = screen.getByTestId("pdf-input");
-    const mockPdf = new File(["pdf"], "template.pdf", {
-      type: "application/pdf",
+    const docxInput = screen.getByTestId("docx-input");
+    const mockDocx = new File(["docx"], "template.docx", {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
-    fireEvent.change(pdfInput, { target: { files: [mockPdf] } });
+    fireEvent.change(docxInput, { target: { files: [mockDocx] } });
 
     await waitFor(() => {
       expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.jpg");
-      expect(screen.getByTestId("pdf-name")).toHaveTextContent("template.pdf");
+      expect(screen.getByTestId("docx-name")).toHaveTextContent("template.docx");
     });
   });
 

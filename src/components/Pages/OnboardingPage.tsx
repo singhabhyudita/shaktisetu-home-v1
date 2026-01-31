@@ -474,14 +474,14 @@ const OnboardingPage: React.FC = () => {
                 </div>
                 <div className="form-group">
                   <label htmlFor="offer-letter">
-                    Offer Letter Template (PDF)
+                    Offer Letter Template (DOCX)
                   </label>
                   <div className="file-upload-wrapper">
                     <input
                       id="offer-letter"
-                      data-testid="pdf-input"
+                      data-testid="docx-input"
                       type="file"
-                      accept=".pdf"
+                      accept=".docx"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
@@ -493,8 +493,8 @@ const OnboardingPage: React.FC = () => {
                         }
                       }}
                     />
-                    <span className="file-label" data-testid="pdf-name">
-                      {orgDetails.offerLetterName || "Choose PDF"}
+                    <span className="file-label" data-testid="docx-name">
+                      {orgDetails.offerLetterName || "Choose DOCX"}
                     </span>
                   </div>
                 </div>
