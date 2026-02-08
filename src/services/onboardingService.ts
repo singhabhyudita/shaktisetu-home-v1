@@ -30,16 +30,13 @@ export class OnboardingService {
   }
 
   /**
-   * Submits the onboarding request.
    * @param payload The onboarding data.
    * @param logo Optional organization logo file.
-   * @param offerLetter Optional offer letter template PDF file.
    * @returns An object containing success status, response data, and any error.
    */
   static async submitOnboarding(
     payload: OnboardingRequest,
     logo: File | null = null,
-    offerLetter: File | null = null,
   ): Promise<{
     success: boolean;
     error: string;
@@ -76,17 +73,6 @@ export class OnboardingService {
             onboardingData.logo.path,
             onboardingData.logo.token,
             logo,
-          ),
-        );
-      }
-
-      if (offerLetter && onboardingData.offer_letter) {
-        uploadPromises.push(
-          OnboardingService.uploadToSignedUrl(
-            "offer-letter-template",
-            onboardingData.offer_letter.path,
-            onboardingData.offer_letter.token,
-            offerLetter,
           ),
         );
       }

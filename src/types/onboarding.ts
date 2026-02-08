@@ -34,7 +34,6 @@ export interface SignedUrlInfo {
 
 export interface OnboardingResponse {
   logo: SignedUrlInfo;
-  offer_letter: SignedUrlInfo;
 }
 
 export interface OnboardingRequest {
