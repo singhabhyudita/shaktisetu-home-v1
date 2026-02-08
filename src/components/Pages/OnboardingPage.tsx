@@ -48,8 +48,6 @@ const OnboardingPage: React.FC = () => {
     name: "",
     logo: null as File | null,
     logoName: "",
-    offerLetterTemplate: null as File | null,
-    offerLetterName: "",
   });
 
   // 3. Outlets
@@ -248,11 +246,7 @@ const OnboardingPage: React.FC = () => {
         org: org,
       };
       const { success, error: submitError } =
-        await OnboardingService.submitOnboarding(
-          finalPayload,
-          orgDetails.logo,
-          orgDetails.offerLetterTemplate,
-        );
+        await OnboardingService.submitOnboarding(finalPayload, orgDetails.logo);
       if (success) {
         setStep(2);
       } else {
@@ -313,6 +307,17 @@ const OnboardingPage: React.FC = () => {
   return (
     <div className="onboarding-page">
       <div className="onboarding-container">
+        {isSubmitting && (
+          <div className="loading-overlay">
+            <div className="loader-content">
+              <div className="premium-spinner"></div>
+              <p>Processing Registration...</p>
+              <span className="loader-subtext">
+                Please do not refresh the page
+              </span>
+            </div>
+          </div>
+        )}
         {showErrorModal && (
           <div
             className="error-modal-overlay"
@@ -476,32 +481,6 @@ const OnboardingPage: React.FC = () => {
                     />
                     <span className="file-label" data-testid="logo-name">
                       {orgDetails.logoName || "Choose Logo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="offer-letter">
-                    Offer Letter Template (DOCX)
-                  </label>
-                  <div className="file-upload-wrapper">
-                    <input
-                      id="offer-letter"
-                      data-testid="docx-input"
-                      type="file"
-                      accept=".docx"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setOrgDetails((prev) => ({
-                            ...prev,
-                            offerLetterTemplate: file,
-                            offerLetterName: file.name,
-                          }));
-                        }
-                      }}
-                    />
-                    <span className="file-label" data-testid="docx-name">
-                      {orgDetails.offerLetterName || "Choose DOCX"}
                     </span>
                   </div>
                 </div>

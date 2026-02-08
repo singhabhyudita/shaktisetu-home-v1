@@ -278,8 +278,8 @@ describe("OnboardingPage", () => {
     );
   });
 
-  it("handles file uploads for logo and offer letter", async () => {
-    // Mock FileReader with a DIFFERENT instance for each call
+  it("handles file uploads for logo", async () => {
+  // Mock FileReader
     (window as any).FileReader = jest.fn().mockImplementation(() => ({
       readAsDataURL: jest.fn(function (this: any) {
         setTimeout(() => {
@@ -304,17 +304,8 @@ describe("OnboardingPage", () => {
     const mockLogo = new File(["logo"], "logo.jpg", { type: "image/jpeg" });
     fireEvent.change(logoInput, { target: { files: [mockLogo] } });
 
-    const docxInput = screen.getByTestId("docx-input");
-    const mockDocx = new File(["docx"], "template.docx", {
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
-    fireEvent.change(docxInput, { target: { files: [mockDocx] } });
-
     await waitFor(() => {
       expect(screen.getByTestId("logo-name")).toHaveTextContent("logo.jpg");
-      expect(screen.getByTestId("docx-name")).toHaveTextContent(
-        "template.docx",
-      );
     });
   });
 
@@ -375,7 +366,6 @@ describe("OnboardingPage", () => {
             }),
           ],
         }),
-        null,
         null,
       );
     });
