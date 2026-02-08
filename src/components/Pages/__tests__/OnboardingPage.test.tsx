@@ -279,7 +279,7 @@ describe("OnboardingPage", () => {
   });
 
   it("handles file uploads for logo", async () => {
-  // Mock FileReader
+    // Mock FileReader
     (window as any).FileReader = jest.fn().mockImplementation(() => ({
       readAsDataURL: jest.fn(function (this: any) {
         setTimeout(() => {
