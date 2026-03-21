@@ -16,7 +16,12 @@ const CTA: React.FC = () => {
               <strong>App Store</strong>
             </div>
           </a>
-          <a href="/" className="store-badge">
+          <a
+            href="https://play.google.com/store/apps/details?id=com.shaktisetu.candidate"
+            className="store-badge"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="store-icon">▶</div>
             <div className="store-text">
               <span>GET IT ON</span>
