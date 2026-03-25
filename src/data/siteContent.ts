@@ -7,6 +7,9 @@ export const SITE_INFO = {
     "FLAT NO-T-2-402, PLOT NO. D69, SKP HOUSING SOCIETY PVT LTD, SECTOR 12, 410210, MAHARASHTRA, INDIA",
   grievanceOfficer: "Mrs Sangeeta Bhalekar",
   foundedYear: "2025",
+  appleStoreUrl: "https://apps.apple.com/in/app/shaktisetu/id6759998685",
+  playStoreUrl:
+    "https://play.google.com/store/apps/details?id=com.shaktisetu.candidate",
 };
 
 export const HERO_CONTENT = {
