@@ -1,4 +1,5 @@
 import React from "react";
+import { SITE_INFO } from "../../../data/siteContent";
 import "./CTA.css";
 
 const CTA: React.FC = () => {
@@ -9,7 +10,12 @@ const CTA: React.FC = () => {
           Ready to get started?
         </h2>
         <div className="cta-buttons">
-          <a href="/" className="store-badge">
+          <a
+            href={SITE_INFO.appleStoreUrl}
+            className="store-badge"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="store-icon"></div>
             <div className="store-text">
               <span>Download on the</span>
@@ -17,7 +23,7 @@ const CTA: React.FC = () => {
             </div>
           </a>
           <a
-            href="https://play.google.com/store/apps/details?id=com.shaktisetu.candidate"
+            href={SITE_INFO.playStoreUrl}
             className="store-badge"
             target="_blank"
             rel="noopener noreferrer"
